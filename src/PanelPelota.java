@@ -41,8 +41,23 @@ public class PanelPelota extends JPanel implements Runnable {
 		gc.drawString("Jugador1: " + contPlay1, 25, 10);
 		gc.drawString("Jugador2: " + contPlay2, 150, 10);
 
-		if (gameOver)
-			gc.drawString("Game Over", 100, 125);
+		if (gameOver) {
+			//gc.drawString("Game Over", 100, 125);
+			Restart replay = new Restart();
+			JPanel midPanel = new JPanel();
+			replay.setVisible(true);
+			if(contPlay1 == 6)
+				midPanel.add(new JLabel("Player1 wins!"));
+			if(contPlay2 == 6)
+				midPanel.add(new JLabel("Player2 wins!"));
+			replay.setTitle("Game Over!");
+			replay.setSize(300, 100);
+			replay.setLocationRelativeTo(null);
+			
+			midPanel.add(new JLabel(""));
+			replay.add(midPanel, BorderLayout.CENTER);
+			replay.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		}
 	}
 
 	// Positions on X and Y for the ball
