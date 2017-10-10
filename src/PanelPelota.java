@@ -1,12 +1,14 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PanelPelota extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 	// Positions on X and Y for the ball, player 1 and player 2
-	private int pelotaX = 10, pelotaY = 100, pelota2X = 230, pelota2Y = 100, jug1X = 10, jug1Y = 100, jug2X = 230, jug2Y = 100;
+	private int pelotaX = 50, pelotaY = 100, pelota2X = 200, pelota2Y = 100, jug1X = 10, jug1Y = 100, jug2X = 230, jug2Y = 100;
 	Thread hilo;
 	int derecha = 5;// to the right
 	int izquierda = -5; // to the left
@@ -14,6 +16,9 @@ public class PanelPelota extends JPanel implements Runnable {
 	int abajo = -5; // down
 	int ancho, alto; // Width and height of the ball
 	int ancho2, alto2;
+	//Count down to add second ball
+	boolean ball2 = false;
+	int countdown = 10000;
 	// Scores
 	int contPlay1 = 0, contPlay2 = 0;
 	boolean player1FlagArr, player1FlagAba, player2FlagArr, player2FlagAba;
@@ -30,10 +35,20 @@ public class PanelPelota extends JPanel implements Runnable {
 		setOpaque(false);
 		super.paintComponent(gc);
 
+		Timer t = new Timer();
+	    t.schedule(new TimerTask() {
+	        @Override
+	        public void run() {
+	            ball2 = true;
+	        }
+	    }, countdown);
+	    
 		// Draw ball
 		gc.setColor(Color.black);
 		gc.fillOval(pelotaX, pelotaY, 8, 8);
-		gc.fillOval(pelota2X, pelota2Y, 8, 8);
+		
+		if(ball2 == true)
+			gc.fillOval(pelota2X, pelota2Y, 8, 8);
 
 		// Draw ships
 		gc.fillRect(jug1X, jug1Y, 10, 25);
@@ -192,34 +207,6 @@ public class PanelPelota extends JPanel implements Runnable {
 				}
 				dibujarPelota(pelotaX, pelotaY);
 				
-				// The second ball move from left to right
-				if (izqDer2) {
-					// a la derecha
-					pelota2X += derecha;
-					if (pelota2X >= (ancho - 8))
-						izqDer2 = false;
-				} else {
-					// a la izquierda
-					pelota2X += izquierda;
-					if (pelota2X <= 0)
-						izqDer2 = true;
-				}
-
-				// The ball moves from up to down
-				if (arrAba2) {
-					// hacia arriba
-					pelota2Y += arriba;
-					if (pelota2Y >= (alto - 8))
-						arrAba2 = false;
-
-				} else {
-					// hacia abajo
-					pelota2Y += abajo;
-					if (pelota2Y <= 0)
-						arrAba2 = true;
-				}
-				dibujarPelota2(pelota2X, pelota2Y);
-
 				// Delay
 				try {
 					Thread.sleep(50);
@@ -234,11 +221,11 @@ public class PanelPelota extends JPanel implements Runnable {
 				moverPlayer2();
 
 				// The score of the player 1 increase
-				if (pelotaX >= (ancho - 8) || pelota2X >= (ancho2 - 8))
+				if (pelotaX >= (ancho - 8))
 					contPlay1++;
 
 				// The score of the player 2 increase
-				if (pelotaX == 0 || pelota2X == 0)
+				if (pelotaX == 0)
 					contPlay2++;
 
 				// Game over. Here you can change 6 to any value
@@ -256,13 +243,51 @@ public class PanelPelota extends JPanel implements Runnable {
 				if (pelotaX == (jug2X - 5) && pelotaY >= jug2Y && pelotaY <= (jug2Y + 25))
 					izqDer = false;
 				
-				// The ball2 stroke with the player 1
-				if (pelota2X == jug1X + 10 && pelota2Y >= jug1Y && pelota2Y <= (jug1Y + 25))
-					izqDer2 = true;
+				if(ball2 == true) {
+					// The second ball move from left to right
+					if (izqDer2) {
+						// a la derecha
+						pelota2X += derecha;
+						if (pelota2X >= (ancho - 8))
+							izqDer2 = false;
+					} else {
+						// a la izquierda
+						pelota2X += izquierda;
+						if (pelota2X <= 0)
+							izqDer2 = true;
+					}
+					
+					// The ball moves from up to down
+					if (arrAba2) {
+						// hacia arriba
+						pelota2Y += arriba;
+						if (pelota2Y >= (alto - 8))
+							arrAba2 = false;
 
-				// The ball2 stroke with the player 2
-				if (pelota2X == (jug2X - 5) && pelota2Y >= jug2Y && pelota2Y <= (jug2Y + 25))
-					izqDer2 = false;
+					} else {
+						// hacia abajo
+						pelota2Y += abajo;
+						if (pelota2Y <= 0)
+							arrAba2 = true;
+					}
+					
+					// The score of the player 1 increase
+					if (pelota2X >= (ancho - 8))
+						contPlay1++;
+
+					// The score of the player 2 increase
+					if (pelota2X == 0)
+						contPlay2++;
+					
+					// The ball2 stroke with the player 1
+					if (pelota2X == jug1X + 10 && pelota2Y >= jug1Y && pelota2Y <= (jug1Y + 25))
+						izqDer2 = true;
+
+					// The ball2 stroke with the player 2
+					if (pelota2X == (jug2X - 5) && pelota2Y >= jug2Y && pelota2Y <= (jug2Y + 25))
+						izqDer2 = false;
+					dibujarPelota2(pelota2X, pelota2Y);
+				}
 			}
 		}
 	}
