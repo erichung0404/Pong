@@ -16,13 +16,15 @@ public class PanelPelota extends JPanel implements Runnable {
 	int abajo = -5; // down
 	int ancho, alto; // Width and height of the ball
 	int ancho2, alto2;
-	//Count down to add second ball
+	// Count down to add second ball
 	boolean ball2 = false;
 	int countdown = 10000;
 	// Scores
 	int contPlay1 = 0, contPlay2 = 0;
 	boolean player1FlagArr, player1FlagAba, player2FlagArr, player2FlagAba;
 	boolean juego, gameOver;
+	// timer
+	Timer t = new Timer();
 
 	public PanelPelota() {
 		juego = true;
@@ -35,13 +37,14 @@ public class PanelPelota extends JPanel implements Runnable {
 		setOpaque(false);
 		super.paintComponent(gc);
 
-		Timer t = new Timer();
-	    t.schedule(new TimerTask() {
-	        @Override
-	        public void run() {
-	            ball2 = true;
-	        }
-	    }, countdown);
+		if(Menu.level == 2) {
+			t.schedule(new TimerTask() {
+		        @Override
+		        public void run() {
+		            ball2 = true;
+		        }
+		    }, countdown);			
+		}
 	    
 		// Draw ball
 		gc.setColor(Color.black);
@@ -135,7 +138,7 @@ public class PanelPelota extends JPanel implements Runnable {
 			break;
 		}
 	}
-
+	
 	// Move player 1
 	public void moverPlayer1() {
 		if (player1FlagArr == true && jug1Y >= 0)
@@ -167,7 +170,7 @@ public class PanelPelota extends JPanel implements Runnable {
 		this.jug2Y = y;
 		repaint();
 	}
-
+	
 	public void run() {
 		// TODO Auto-generated method stub
 		boolean izqDer = false;
@@ -178,7 +181,6 @@ public class PanelPelota extends JPanel implements Runnable {
 		while (true) {
 
 			if (juego) {
-
 				// The ball move from left to right
 				if (izqDer) {
 					// a la derecha

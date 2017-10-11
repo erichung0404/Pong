@@ -35,6 +35,18 @@ public class Main extends JFrame {
 				formKeyReleased(evt);
 			}
 		});
+        setTitle("Pong");
+        addWindowListener(new WindowAdapter() {
+        	  public void windowClosing(WindowEvent e) {
+        	    int confirmed = JOptionPane.showConfirmDialog(null, 
+        	        "Are you sure you want to exit the program?", "Exit Program Message Box",
+        	        JOptionPane.YES_NO_OPTION);
+
+        	    if (confirmed == JOptionPane.YES_OPTION) {
+        	      dispose();
+        	    }
+        	  }
+        	});
 
 	}
 
@@ -80,7 +92,10 @@ public class Main extends JFrame {
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				Main thisClass = new Main();
+				Menu thisClass = new Menu();
+				thisClass.setSize(300, 80);
+				thisClass.setLocationRelativeTo(null);
+				thisClass.setTitle("Pong");
 				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				thisClass.setVisible(true);
 			}
